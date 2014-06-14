@@ -1,8 +1,8 @@
-(function(win, doc, $) {
+(function(win, doc, $, undefined) {
 
   'use strict';
 
-  var data, fillForm, FormData;
+  var data, fillForm, FormData, len, rand;
 
   $.getScript('//cdnjs.cloudflare.com/ajax/libs/Faker/0.7.2/MinFaker.js')
     .done(function() {
@@ -16,9 +16,6 @@
   /*==========  CREATE DATA OBJECT  ==========*/
 
   FormData = function(faker) {
-
-    // Here we're creating a constructor and using Faker to give us
-    // all of our static fields
 
     this.faker     = faker;
 
@@ -42,12 +39,10 @@
 
   };
 
-  // We'll use the prototype to reuse functions across a few generic inputs
-
   FormData.prototype.randomSelect = function(el) {
-    var $el = $(el), len, rand;
+    var $el = $(el);
 
-    len = $el.find('option').length - 1;
+    len  = $el.find('option').length - 1;
     rand = Math.floor( Math.random() * len ) + 1;
 
     $el.children('option')
@@ -57,7 +52,6 @@
   };
 
   FormData.prototype.randomRadio = function(radios) {
-    var len, rand;
     radios = radios.not('[type="hidden"]');
     len    = radios.length;
     rand   = Math.floor( Math.random() * len );
@@ -73,8 +67,8 @@
   };
 
   FormData.prototype.randomCheckbox = function(el) {
-    var rand = Math.floor( Math.random() * 2 ),
-        $el = $(el);
+    rand = Math.floor( Math.random() * 2 ),
+    $el  = $(el);
 
     $el.prop('checked', false);
 
