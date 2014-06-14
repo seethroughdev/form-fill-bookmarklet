@@ -63,8 +63,6 @@ on any environment<br>
 with unique data<br>
 with valid and invalid entries.
 
-This should be straightforward.
-
 <h4>Autofill my form</h4>
 This is something we can easily implement in vanilla JavaScript.  But for the sake of simplicity (and cross-browser compatibility), lets use jQuery.
 
@@ -76,7 +74,6 @@ We want to test with different email addresses, names etc. You never know what m
 
 <h4>With valid and invalid entries</h4>
 A downside of running our script with a bookmarklet is we can't pass in arguments. So we'll have to create a few different tests. Or get clever.
-
 
 <h3>Building the Bookmarklet</h3>
 
@@ -95,7 +92,7 @@ Lets start with our snippet code:
 
 @todo Pen here:  http://codepen.io/seethroughtrees/pen/HeoCd
 
-Lets break this snippet down. We're using JavaScript to append a <code>script</code> tag to the <code>body</code>, and adding the path to our file inside. If you are testing on an https secure page, you will want to make sure your script is also https.  Otherwise some browsers will throw a security error.  Lastly, we're wrapping the whole snippet in a <a href="http://sarfraznawaz.wordpress.com/2012/01/26/javascript-self-invoking-functions/">Self Invoking Anonymous Function</a> just to keep it from affecting the rest of the code.
+Lets break this snippet down. We're using JavaScript to append a <code>script</code> tag to the <code>body</code>, and adding the path to our file inside. If you are testing on an https secure page, you will want to make sure your script is also https.  Otherwise some browsers will throw a security error.
 
 <em>Note: You'll probably use a localhost version of the file while you're in development and replace it with a production version when you're ready to share.</em>
 
@@ -107,25 +104,20 @@ First lets wrap the whole thing in a <a href="#">Self Invoking Anonymous Functio
 
 Its a bit boilerplate.  But basically, it just protects the variables created inside of it.  While at the same time, executes on load.
 
-<pre rel="Javascript"><code markup="tt" class="language-javascript">
-
+<pre rel="Javascript">
+<code markup="tt" class="language-javascript">
   (function(win, doc, $, undefined) {
-
     'use strict';
 
-    // our code will go here
-
   }(window, window.document, window.jQuery));
-
 </code></pre>
 
-Next, lets load up FakerJS script.  Since we've decided we'll use jQuery as a dependency.  We can just use $.getScript which will return us an easy promise.
+Next, lets load up the FakerJS script.  Since we've decided we'll use jQuery as a dependency.  We can just use $.getScript which will return us an easy promise.
 
 <pre rel="Javascript"><code markup="tt" class="language-javascript">
   $.getScript('//cdnjs.cloudflare.com/ajax/libs/Faker/0.7.2/MinFaker.js')
     .done(function() {
-      data = new FormData(win.Faker);
-      fillForm(data);
+      // create our data
     })
     .fail(function() {
       win.console.error('ERROR: FakerJS not loaded!');
@@ -204,7 +196,7 @@ I'd like to automate some field types like checkboxes and select boxes etc...  S
 
 And last, we just need to bind the data to the fields on our form.
 
-<pre rel="jQuery"><code markup="tt" class="language-javascript">
+<pre rel="Javascript"><code markup="tt" class="language-javascript">
   fillForm = function(data) {
 
     $('#Field17').val(data.username);
@@ -239,8 +231,6 @@ And last, we just need to bind the data to the fields on our form.
     });
   };
 </code></pre>
-
-Together all this code.  Closing remarks.
 
 <h3>Demo</h3>
 
