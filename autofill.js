@@ -2,7 +2,11 @@
 
   'use strict';
 
-  var data, fillForm, FormData, len, rand;
+  var $ = window.jQuery, data, fillForm, FormData, len, _rand;
+
+  _rand = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
 
   $.getScript('//cdnjs.cloudflare.com/ajax/libs/Faker/0.7.2/MinFaker.js')
     .done(function() {
@@ -18,14 +22,13 @@
   FormData = function(faker) {
 
     this.faker     = faker;
+    this.randomWord = faker.Internet.domainWord();
 
-    this.username  = 'fake_' + faker.Internet.domainWord();
-    this.username  += faker.random.number(9999);
+    this.username  = 'fake_' + this.randomWord;
+    this.username  += _rand(100,9999);
 
     this.firstName = faker.Name.firstName();
     this.lastName  = faker.Name.lastName();
-
-    this.email     = 'chriscoyier+' + this.username + '@gmail.com';
 
     this.phone1    = faker.Helpers.replaceSymbolWithNumber('###');
     this.phone2    = faker.Helpers.replaceSymbolWithNumber('###');
@@ -39,42 +42,43 @@
 
   };
 
-  FormData.prototype.randomSelect = function(el) {
+  FormData.prototype.randomizeSelect = function(el) {
     var $el = $(el);
 
     len  = $el.find('option').length - 1;
-    rand = Math.floor( Math.random() * len ) + 1;
 
     $el.children('option')
       .prop('selected', false)
-      .eq( rand )
+      .eq( _rand( 1,len + 1 ) )
       .prop('selected', true);
   };
 
-  FormData.prototype.randomRadio = function(radios) {
+  FormData.prototype.randomizeRadio = function(radios) {
     radios = radios.not('[type="hidden"]');
     len    = radios.length;
-    rand   = Math.floor( Math.random() * len );
 
     radios
       .prop('checked', false)
-      .eq( rand )
+      .eq( _rand( 0, len - 1 ) )
       .prop('checked', true);
   };
 
-  FormData.prototype.randomParagraph = function(el) {
-    $(el).val(this.faker.Lorem.paragraph());
+  FormData.prototype.randomizeParagraph = function(el) {
+    $(el).val(this.faker.Lorem.sentence(5));
   };
 
-  FormData.prototype.randomCheckbox = function(el) {
-    rand = Math.floor( Math.random() * 2 );
+  FormData.prototype.randomizeCheckbox = function(el) {
     var $el  = $(el);
 
     $el.prop('checked', false);
 
-    if (rand === 0) {
+    if (_rand( 0,1 ) === 0) {
       $el.prop('checked', true);
     }
+  };
+
+  FormData.prototype.randomizeEmail = function(el) {
+    $(el).val('chriscoyier+' + this.randomWord + '@gmail.com');
   };
 
   /*==========  FILL IN THE FORM  ==========*/
@@ -84,7 +88,6 @@
     $('#Field17').val(data.username);
     $('#Field2').val(data.firstName);
     $('#Field3').val(data.lastName);
-    $('#Field10').val(data.email);
     $('#Field11').val(data.phone1);
     $('#Field11-1').val(data.phone2);
     $('#Field11-2').val(data.phone3);
@@ -95,21 +98,26 @@
     $('#Field8').val(data.zip);
     $('#Field13').val(data.text1);
 
-    data.randomRadio($('[name="Field21"]'));
+    data.randomizeRadio($('[name="Field21"]'));
 
     // Randomize all select boxes
     $('select').each(function() {
-      data.randomSelect(this);
+      data.randomizeSelect(this);
     });
 
     // Randomize all checkboxes
     $('input[type="checkbox"').each(function() {
-      data.randomCheckbox(this);
+      data.randomizeCheckbox(this);
     });
 
-    // Randomize all text areas
+    // Randomize all textareas
     $('textarea').each(function() {
-      data.randomParagraph(this);
+      data.randomizeParagraph(this);
+    });
+
+    // Randomize all emails
+    $('input[type="email"').each(function() {
+      data.randomizeEmail(this);
     });
 
   };
