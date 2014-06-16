@@ -1,4 +1,4 @@
-(function(win, doc, $, undefined) {
+(function(win, doc, $) {
 
   'use strict';
 
@@ -67,8 +67,8 @@
   };
 
   FormData.prototype.randomCheckbox = function(el) {
-    rand = Math.floor( Math.random() * 2 ),
-    $el  = $(el);
+    rand = Math.floor( Math.random() * 2 );
+    var $el  = $(el);
 
     $el.prop('checked', false);
 

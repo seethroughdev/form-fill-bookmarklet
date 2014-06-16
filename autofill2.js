@@ -1,16 +1,20 @@
-(function(win, doc, $) {
+var fillForm = function() {
 
   'use strict';
 
-  var data, fillForm, FormData, len, rand;
+  if (typeof window.jQuery === 'undefined') {
+    return;
+  }
 
+  var $ = window.jQuery, data, fillForm, FormData, len, rand;
+
+  // Load FakerJS library
   $.getScript('//cdnjs.cloudflare.com/ajax/libs/Faker/0.7.2/MinFaker.js')
     .done(function() {
-      data = new FormData(win.Faker);
-      fillForm(data);
+      fillForm();
     })
     .fail(function() {
-      win.console.error('ERROR: FakerJS not loaded!');
+      window.console.error('ERROR: FakerJS not loaded!');
     });
 
   /*==========  CREATE DATA OBJECT  ==========*/
@@ -22,20 +26,17 @@
     this.username  = 'fake_' + faker.Internet.domainWord();
     this.username  += faker.random.number(9999);
 
-    this.firstName = faker.Name.firstName();
-    this.lastName  = faker.Name.lastName();
+    // set this value to your password specifications
+    this.password  = 'pass1234';
+
     this.name      = faker.Name.findName();
 
-    this.phone1    = faker.Helpers.replaceSymbolWithNumber('###');
-    this.phone2    = faker.Helpers.replaceSymbolWithNumber('###');
-    this.phone3    = faker.Helpers.replaceSymbolWithNumber('####');
-
     this.address1  = faker.Address.streetAddress();
-    this.address2  = faker.Address.secondaryAddress();
     this.city      = faker.Address.city();
     this.state     = faker.random.br_state_abbr();
     this.zip       = faker.Address.zipCode();
 
+    // Chris's actual credit card number
     this.cc        = '4242 4242 4242 4242';
     this.exp1      = Math.floor( Math.random() * 12) + 1;
     this.exp2      = Math.floor( Math.random() * 8) + 14;
@@ -43,7 +44,7 @@
 
   };
 
-  FormData.prototype.randomSelect = function(el) {
+  FormData.prototype.randomizeSelect = function(el) {
     var $el = $(el);
 
     len  = $el.find('option').length - 1;
@@ -55,7 +56,7 @@
       .prop('selected', true);
   };
 
-  FormData.prototype.randomRadio = function(radios) {
+  FormData.prototype.randomizeRadio = function(radios) {
     radios = radios.not('[type="hidden"]');
     len    = radios.length;
     rand   = Math.floor( Math.random() * len );
@@ -66,11 +67,11 @@
       .prop('checked', true);
   };
 
-  FormData.prototype.randomParagraph = function(el) {
-    $(el).val(this.faker.Lorem.paragraph());
+  FormData.prototype.randomizeParagraph = function(el) {
+    $(el).val(this.faker.Lorem.sentence(5));
   };
 
-  FormData.prototype.randomCheckbox = function(el) {
+  FormData.prototype.randomizeCheckbox = function(el) {
     rand = Math.floor( Math.random() * 2 );
     var $el  = $(el);
 
@@ -81,15 +82,17 @@
     }
   };
 
-  FormData.prototype.randomEmail = function() {
+  FormData.prototype.randomizeEmail = function() {
     return 'chriscoyier+' + this.faker.Internet.domainWord() + '@gmail.com';
   };
 
   /*==========  FILL IN THE FORM  ==========*/
 
-  fillForm = function(data) {
+  fillForm = function() {
+    data = new FormData(window.Faker);
 
     $('#name').val(data.name);
+    $('#email').val(data.randomizeEmail());
     $('#username').val(data.username);
     $('#cc').val(data.cc);
     $('#exp-1').val(data.exp1);
@@ -99,29 +102,30 @@
     $('#city').val(data.city);
     $('#state').val(data.state);
     $('#zip').val(data.zip);
+    $('#pw').val(data.password);
+    $('#pw-repeat').val(data.password);
 
-    data.randomRadio($('[name="radio-choice"]'));
+    data.randomizeRadio($('[name="radio-choice"]'));
 
     // Randomize all select boxes
     $('select').each(function() {
-      data.randomSelect(this);
+      data.randomizeSelect(this);
     });
 
     // Randomize all checkboxes
     $('input[type="checkbox"').each(function() {
-      data.randomCheckbox(this);
+      data.randomizeCheckbox(this);
     });
 
     // Randomize all textareas
     $('textarea').each(function() {
-      data.randomParagraph(this);
-    });
-
-    // Randomize any email field
-    $('input[type="email"]').each(function() {
-      $(this).val(data.randomEmail());
+      data.randomizeParagraph(this);
     });
 
   };
 
-}(window, window.document, window.jQuery));
+};
+
+fillForm();
+
+$('#prefill').on('click', fillForm);
