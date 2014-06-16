@@ -1,13 +1,18 @@
-var setForm = function() {
+var runBookmarklet = function() {
+
+
+/*==========  Code starts here, above is for demo to work inside CodePen  ==========*/
+
+(function(win, doc, $) {
 
   'use strict';
 
   // Don't run script if jQuery isn't loaded
-  if (typeof window.jQuery === 'undefined') {
+  if (typeof win.jQuery === 'undefined') {
     return;
   }
 
-  var $ = window.jQuery, data, fillForm, FormData, len, _rand;
+  var data, fillForm, FormData, len, _rand;
 
   // I like Chris's randomize function.  Lets use it here.
   _rand = function(min, max) {
@@ -20,8 +25,11 @@ var setForm = function() {
       fillForm();
     })
     .fail(function() {
-      window.console.error('ERROR: FakerJS not loaded!');
+      win.console.error('ERROR: FakerJS not loaded!');
     });
+
+
+
 
   /*==========  CREATE DATA OBJECT  ==========*/
 
@@ -51,6 +59,7 @@ var setForm = function() {
     this.cvv       = _rand(100,999);
 
   };
+
 
   FormData.prototype.randomizeSelect = function(el) {
     var $el = $(el);
@@ -91,10 +100,12 @@ var setForm = function() {
     $(el).val('chriscoyier+' + this.randomWord + '@gmail.com');
   };
 
+
+
   /*==========  FILL IN THE FORM  ==========*/
 
   fillForm = function() {
-    data = new FormData(window.Faker);
+    data = new FormData(win.Faker);
 
     $('#name').val(data.name);
     $('#username').val(data.username);
@@ -133,8 +144,12 @@ var setForm = function() {
 
   };
 
+}(window, window.document, window.jQuery));
+
+
+/*==========  EOF Bookmarklet Code. Below is for Codepen demo. ==========*/
+
 };
+runBookmarklet();
+window.jQuery('#prefill').on('click', runBookmarklet);
 
-setForm();
-
-window.jQuery('#prefill').on('click', setForm);

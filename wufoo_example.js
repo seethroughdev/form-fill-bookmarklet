@@ -2,12 +2,20 @@
 
   'use strict';
 
+  // Don't run script if jQuery isn't loaded
+  if (typeof window.jQuery === 'undefined') {
+    return;
+  }
+
   var $ = window.jQuery, data, fillForm, FormData, len, _rand;
 
+  // Quick utility to get random numbers
   _rand = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+
+  // Load FakerJS library
   $.getScript('//cdnjs.cloudflare.com/ajax/libs/Faker/0.7.2/MinFaker.js')
     .done(function() {
       data = new FormData(win.Faker);
@@ -16,6 +24,8 @@
     .fail(function() {
       win.console.error('ERROR: FakerJS not loaded!');
     });
+
+
 
   /*==========  CREATE DATA OBJECT  ==========*/
 
@@ -41,6 +51,7 @@
     this.zip       = faker.Address.zipCode();
 
   };
+
 
   FormData.prototype.randomizeSelect = function(el) {
     var $el = $(el);
@@ -100,18 +111,22 @@
 
     data.randomizeRadio($('[name="Field21"]'));
 
+    // Randomize all select boxes
     $('select').each(function() {
       data.randomizeSelect(this);
     });
 
+    // Randomize all checkboxes
     $('input[type="checkbox"').each(function() {
       data.randomizeCheckbox(this);
     });
 
+    // Randomize all textareas
     $('textarea').each(function() {
       data.randomizeParagraph(this);
     });
 
+    // Randomize all emails
     $('input[type="email"').each(function() {
       data.randomizeEmail(this);
     });
