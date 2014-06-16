@@ -100,22 +100,18 @@
 
     data.randomizeRadio($('[name="Field21"]'));
 
-    // Randomize all select boxes
     $('select').each(function() {
       data.randomizeSelect(this);
     });
 
-    // Randomize all checkboxes
     $('input[type="checkbox"').each(function() {
       data.randomizeCheckbox(this);
     });
 
-    // Randomize all textareas
     $('textarea').each(function() {
       data.randomizeParagraph(this);
     });
 
-    // Randomize all emails
     $('input[type="email"').each(function() {
       data.randomizeEmail(this);
     });

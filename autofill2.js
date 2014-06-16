@@ -87,8 +87,8 @@ var setForm = function() {
     }
   };
 
-  FormData.prototype.randomizeEmail = function() {
-    return 'chriscoyier+' + this.randomWord + '@gmail.com';
+  FormData.prototype.randomizeEmail = function(el) {
+    $(el).val('chriscoyier+' + this.randomWord + '@gmail.com');
   };
 
   /*==========  FILL IN THE FORM  ==========*/
@@ -97,7 +97,6 @@ var setForm = function() {
     data = new FormData(window.Faker);
 
     $('#name').val(data.name);
-    $('#email').val(data.randomizeEmail());
     $('#username').val(data.username);
     $('#cc').val(data.cc);
     $('#exp-1').val(data.exp1);
@@ -125,6 +124,11 @@ var setForm = function() {
     // Randomize all textareas
     $('textarea').each(function() {
       data.randomizeParagraph(this);
+    });
+
+    // Randomize all emails
+    $('input[type="email"').each(function() {
+      data.randomizeEmail(this);
     });
 
   };
