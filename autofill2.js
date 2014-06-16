@@ -1,12 +1,18 @@
-var fillForm = function() {
+var setForm = function() {
 
   'use strict';
 
+  // Don't run script if jQuery isn't loaded
   if (typeof window.jQuery === 'undefined') {
     return;
   }
 
-  var $ = window.jQuery, data, fillForm, FormData, len, rand;
+  var $ = window.jQuery, data, fillForm, FormData, len, _rand;
+
+  // I like Chris's randomize function.  Lets use it here.
+  _rand = function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
 
   // Load FakerJS library
   $.getScript('//cdnjs.cloudflare.com/ajax/libs/Faker/0.7.2/MinFaker.js')
@@ -23,8 +29,10 @@ var fillForm = function() {
 
     this.faker     = faker;
 
-    this.username  = 'fake_' + faker.Internet.domainWord();
-    this.username  += faker.random.number(9999);
+    this.randomWord = faker.Internet.domainWord();
+
+    this.username  = 'fake_' + this.randomWord;
+    this.username  += _rand(100,9999);
 
     // set this value to your password specifications
     this.password  = 'pass1234';
@@ -38,9 +46,9 @@ var fillForm = function() {
 
     // Chris's actual credit card number
     this.cc        = '4242 4242 4242 4242';
-    this.exp1      = Math.floor( Math.random() * 12) + 1;
-    this.exp2      = Math.floor( Math.random() * 8) + 14;
-    this.cvv       = Math.floor( Math.random() * 899) + 100;
+    this.exp1      = _rand(1,12);
+    this.exp2      = _rand(14,22);
+    this.cvv       = _rand(100,999);
 
   };
 
@@ -48,22 +56,20 @@ var fillForm = function() {
     var $el = $(el);
 
     len  = $el.find('option').length - 1;
-    rand = Math.floor( Math.random() * len ) + 1;
 
     $el.children('option')
       .prop('selected', false)
-      .eq( rand )
+      .eq( _rand( 1,len + 1 ) )
       .prop('selected', true);
   };
 
   FormData.prototype.randomizeRadio = function(radios) {
     radios = radios.not('[type="hidden"]');
     len    = radios.length;
-    rand   = Math.floor( Math.random() * len );
 
     radios
       .prop('checked', false)
-      .eq( rand )
+      .eq( _rand( 0, len - 1 ) )
       .prop('checked', true);
   };
 
@@ -72,18 +78,17 @@ var fillForm = function() {
   };
 
   FormData.prototype.randomizeCheckbox = function(el) {
-    rand = Math.floor( Math.random() * 2 );
     var $el  = $(el);
 
     $el.prop('checked', false);
 
-    if (rand === 0) {
+    if (_rand( 0,1 ) === 0) {
       $el.prop('checked', true);
     }
   };
 
   FormData.prototype.randomizeEmail = function() {
-    return 'chriscoyier+' + this.faker.Internet.domainWord() + '@gmail.com';
+    return 'chriscoyier+' + this.randomWord + '@gmail.com';
   };
 
   /*==========  FILL IN THE FORM  ==========*/
@@ -126,6 +131,6 @@ var fillForm = function() {
 
 };
 
-fillForm();
+setForm();
 
-$('#prefill').on('click', fillForm);
+window.jQuery('#prefill').on('click', setForm);
