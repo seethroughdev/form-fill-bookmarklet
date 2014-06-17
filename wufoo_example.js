@@ -7,7 +7,7 @@
     return;
   }
 
-  var $ = window.jQuery, data, fillForm, FormData, len, _rand;
+  var data, fillForm, FormData, len, _rand;
 
   // Quick utility to get random numbers
   _rand = function(min, max) {
